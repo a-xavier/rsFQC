@@ -330,6 +330,7 @@ fn calculate_duplication(initial_vec: &Vec<String>, number_of_records_to_get: us
     .dedup_with_count()
     .collect();
 
+    // Todo -> Bin all reads duplicated more than 10 times
     let dup_map: Vec<(usize, String)> = count_map
     .into_par_iter()
     .filter(|x| x.0 > 1)
@@ -358,7 +359,7 @@ fn calculate_duplication(initial_vec: &Vec<String>, number_of_records_to_get: us
 
 
         println!("y = Number of reads duplicated x times");
-        Chart::new(180, 60, 1.0, max_occurrence as f32)
+        Chart::new(180, 60, 2.0, max_occurrence as f32) // Start duplication chart at x = 2 
         .lineplot(&Shape::Lines(&points_for_distribution_chart))
         .display();
     }
