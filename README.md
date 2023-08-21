@@ -1,5 +1,6 @@
 # rsFQC
-FastQ Quality Control in rust - rustFastQC
+FastQ Quality Control in rust - rustFastQC with in-terminal graphs thanks to [textplots-rs](https://github.com/loony-bean/textplots-rs/)  
+[![Rust](https://github.com/a-xavier/rsFQC/actions/workflows/rust.yml/badge.svg)](https://github.com/a-xavier/rsFQC/actions/workflows/rust.yml)
 
 ### Currently testing:  
 - Size distribution
