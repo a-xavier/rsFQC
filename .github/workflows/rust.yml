@@ -20,4 +20,4 @@ jobs:
     - name: Long Reads
       run: ./target/release/rsFQC ./data/long_reads.fq.gz
     - name: Short reads
-      run: /target/release/rsFQC ./data/short_reads.fq.gz
+      run: ./target/release/rsFQC ./data/short_reads.fq.gz
