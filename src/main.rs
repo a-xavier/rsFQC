@@ -21,7 +21,17 @@ fn main() {
     // The number of records to test
     let number_of_records_to_test: usize = 100000;
 
-    // Plot stuff?
+    // Iterate over lines and process them
+    // get first nth lines 
+    
+    // Get indices to get.
+    // second lines of group of 4
+    // if zero based: 1 - 5 - 9 - 13 - etc
+    // FASTQ FORMAT
+    // @SEQ_ID
+    // GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT
+    // +
+    // !''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65
 
     // PRINT STUFF
     let lines_to_test: Vec<String> = buffer_to_fq_lines(filepath, number_of_records_to_test);
@@ -66,18 +76,6 @@ fn main() {
     println!("Duplications");
     sep();
     calculate_duplication(&lines_to_test, number_of_records_to_test, &maximum, &minimum);
-
-    // Iterate over lines and process them
-    // get first nth lines 
-    
-    // Get indices to get.
-    // second lines of group of 4
-    // if zero based: 1 - 5 - 9 - 13 - etc
-    // FASTQ FORMAT
-    // @SEQ_ID
-    // GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT
-    // +
-    // !''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65
 
     // EXIT CODES
 
@@ -160,6 +158,7 @@ fn quality_chart(lines_to_test: &Vec<String>, number_of_records_to_get: usize, m
 
     if lenght_mode == "Long reads" {step = 10} // if long read, sample every 10 base
     
+    // For each line of zplkodjdjqwe quality , get the vector of qualities [ [20, 32, 43], [32, 43, 13], [12, 32, 43] ]
     let quality_int_lines: Vec<Vec<u32>>  = filtered_lines_to_get
     .par_iter()
     .map(|x: &String| quality_vector_from_line(x.to_owned()))
@@ -195,8 +194,35 @@ fn quality_chart(lines_to_test: &Vec<String>, number_of_records_to_get: usize, m
     .linecolorplot(&Shape::Continuous(Box::new(|_x| qual_threshold)), red)
     .display();
 
-}
+    // 2nd chart with mean quality per read
+    let mut mean_quality_vector: Vec<u32>  = quality_int_lines
+    .par_iter()
+    .map(|x| x.par_iter().sum::<u32>() / x.len() as u32)
+    .collect();
+    mean_quality_vector.sort();
 
+    let vec_for_extremes = mean_quality_vector.clone(); // cant get around that borrowed thing
+
+    let table_dup: Vec<(usize, u32)> = mean_quality_vector.into_iter().dedup_with_count().collect();
+    let point_for_mean_qual: Vec<(f32, f32)> = table_dup
+    .into_par_iter()
+    .map(|(x, y)| (y as f32, x as f32))
+    .collect();
+
+    let max_quality: u32 = vec_for_extremes.iter().cloned().max().unwrap();
+
+    let min_quality: u32 = vec_for_extremes.iter().cloned().min().unwrap();
+
+    // dbg!(&point_for_mean_qual);
+
+    println!("\ny = Distribution of mean read quality");
+    // &Shape::Lines(&[(0.0, qual_threshold), (maximum.to_owned() as f32, qual_threshold)])
+    Chart::new(180, 60, min_quality as f32, max_quality as f32)
+    .lineplot(&Shape::Lines(&point_for_mean_qual))
+    .display();
+
+
+}
 
 /// Character to quality
 fn char_to_qual(c: char)-> u32{
