@@ -2,6 +2,12 @@
 name = "rsFQC"
 version = "0.1.0"
 edition = "2021"
+readme = "README.md"
+repository = "https://github.com/a-xavier/rsFQC"
+license = "MIT"
+keywords = ["fastq", "QC", "FastQC", "genomics"]
+categories = ["command-line-utilities", "science"]
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
