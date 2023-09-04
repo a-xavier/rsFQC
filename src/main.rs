@@ -21,6 +21,10 @@ fn main() {
     // The number of records to test
     let number_of_records_to_test: usize = 100000;
 
+    // CHART WIDTH
+    let chart_width = 140 as u32;
+    let chart_height = 60 as u32;
+
     // Iterate over lines and process them
     // get first nth lines 
     
@@ -62,20 +66,20 @@ fn main() {
     sep();
     println!("QUALITY");
     sep();
-    quality_chart(&lines_to_test, number_of_records_to_test, &maximum, &minimum, length_mode);
-    
+    quality_chart(&lines_to_test, number_of_records_to_test, &maximum, &minimum, length_mode, chart_width, chart_height);
+
     //  LENGTH
     sep();
     println!("Length");
     sep();
     println!("Mean\tMedian\tMin\tMax");
     println!("{}\t{}\t{}\t{}", mean, median, minimum, maximum);
-    length_distribution_chart(&lines_to_test, number_of_records_to_test, &maximum, &minimum);
+    length_distribution_chart(&lines_to_test, number_of_records_to_test, &maximum, &minimum, chart_width, chart_height);
     // Duplication
     sep();
     println!("Duplications");
     sep();
-    calculate_duplication(&lines_to_test, number_of_records_to_test, &maximum, &minimum);
+    calculate_duplication(&lines_to_test, number_of_records_to_test, &maximum, &minimum, chart_width, chart_height);
 
     // EXIT CODES
 
@@ -149,7 +153,7 @@ fn mean_and_median(lines_to_test: &Vec<String>, number_of_records_to_get: usize)
 }
 
 ///quality chart
-fn quality_chart(lines_to_test: &Vec<String>, number_of_records_to_get: usize, maximum: &usize, _minimum: &usize ,lenght_mode: &str){
+fn quality_chart(lines_to_test: &Vec<String>, number_of_records_to_get: usize, maximum: &usize, _minimum: &usize ,lenght_mode: &str, chart_width: u32, chart_height: u32){
     let index_to_get: Vec<usize> = (3..(number_of_records_to_get*4)).step_by(4).collect();
     
     let filtered_lines_to_get: Vec<String> = index_to_get.par_iter().filter_map(|&index| lines_to_test.get(index).cloned()).collect();
@@ -188,8 +192,8 @@ fn quality_chart(lines_to_test: &Vec<String>, number_of_records_to_get: usize, m
     println!("\ny = Mean quality score at each position (horizontal line = Q20)");
 
     // &Shape::Lines(&[(0.0, qual_threshold), (maximum.to_owned() as f32, qual_threshold)])
-    // 
-    Chart::new(180, 60, 0.0, maximum.to_owned() as f32)
+    //
+    Chart::new(chart_width, chart_height, 0.0, maximum.to_owned() as f32)
     .lineplot(&Shape::Bars(&quality_points_for_chart))
     .linecolorplot(&Shape::Continuous(Box::new(|_x| qual_threshold)), red)
     .display();
@@ -217,7 +221,7 @@ fn quality_chart(lines_to_test: &Vec<String>, number_of_records_to_get: usize, m
 
     println!("\ny = Distribution of mean read quality");
     // &Shape::Lines(&[(0.0, qual_threshold), (maximum.to_owned() as f32, qual_threshold)])
-    Chart::new(180, 60, min_quality as f32, max_quality as f32)
+    Chart::new(chart_width, chart_height, min_quality as f32, max_quality as f32)
     .lineplot(&Shape::Lines(&point_for_mean_qual))
     .display();
 
@@ -254,7 +258,7 @@ fn sub_vector_sum_at_index(initial_vec: &Vec<Vec<u32>>, index: usize) -> u32{
 }
 
 /// Length distribution
-fn length_distribution_chart(initial_vec: &Vec<String>, number_of_records_to_get: usize, maximum: &usize, minimum: &usize){
+fn length_distribution_chart(initial_vec: &Vec<String>, number_of_records_to_get: usize, maximum: &usize, minimum: &usize, chart_width: u32, chart_height: u32){
     // GET ATGC LINE // Line 2 if 1 based /
     let index_to_get: Vec<usize> = (1..(number_of_records_to_get*4)).step_by(4).collect();
 
@@ -278,7 +282,7 @@ fn length_distribution_chart(initial_vec: &Vec<String>, number_of_records_to_get
     .collect();
 
     println!("\ny = Distribution of read length at each position");
-    Chart::new(180, 60, minimum.to_owned() as f32, maximum.to_owned() as f32)
+    Chart::new(chart_width, chart_height, minimum.to_owned() as f32, maximum.to_owned() as f32)
         .lineplot(&Shape::Bars(&distribution_points))
         .display();
 
@@ -312,7 +316,7 @@ fn sep(){
 
 /// Duplications (Chart?)
 
-fn calculate_duplication(initial_vec: &Vec<String>, number_of_records_to_get: usize, _maximum: &usize, _minimum: &usize){
+fn calculate_duplication(initial_vec: &Vec<String>, number_of_records_to_get: usize, _maximum: &usize, _minimum: &usize, chart_width: u32, chart_height: u32){
     let index_to_get: Vec<usize> = (1..(number_of_records_to_get*4)).step_by(4).collect();
 
 
@@ -385,7 +389,7 @@ fn calculate_duplication(initial_vec: &Vec<String>, number_of_records_to_get: us
 
 
         println!("y = Number of reads duplicated x times");
-        Chart::new(180, 60, 2.0, max_occurrence as f32) // Start duplication chart at x = 2 
+        Chart::new(chart_width, chart_height, 2.0, max_occurrence as f32) // Start duplication chart at x = 2 
         .lineplot(&Shape::Lines(&points_for_distribution_chart))
         .display();
     }
