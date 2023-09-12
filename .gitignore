@@ -15,3 +15,9 @@ Cargo.lock
 
 # MAC
 .DS_Store
+
+#VScode
+.vscode/
+
+#Own summary
+rsFQC.summary.txt
