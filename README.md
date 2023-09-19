@@ -25,6 +25,17 @@ To speed things up, rsFQC will take shortcuts:
 
 ### Usage
 Only one argument needed - (no flags needed)
+
+If you need to analyse multiple files at once in the same directory (multi mode):  
+```rsFQC /path/to/fatqs/*```  
+This will create a summary file in the current working directory named ```rsFQC.summary.txt```
+
+If you need to analyse only one file:  
+```rsFQC /path/to/file.fq.gz```  
+This will create a in-terminal report, see below.
+
+
+### Output example (single mode)
 ```rsFQC file.fq.gz```
 
 Will produce an output that looks like this (piped to stdout so it's easy to capture in a file with ```rsFQC file.fq.gz > report.txt```:  
